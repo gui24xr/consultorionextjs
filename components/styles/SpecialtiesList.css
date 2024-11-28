@@ -1,0 +1,34 @@
+/* En tu archivo de estilos (ej. styles.css) */
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    font-size: 14px; /* Puedes ajustar el tamaño de fuente según tus necesidades */
+  }
+  
+  th, td {
+    padding: 8px 10px; /* Reduce el padding para hacer los renglones más compactos */
+    text-align: left;
+    border: 1px solid #ddd;
+    line-height: 1.2; /* Controla la altura de las filas */
+  }
+  
+  th {
+    background-color: #f2f2f2;
+  }
+  
+  button {
+    padding: 4px 10px; /* Botones más pequeños */
+    background-color: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+    font-size: 12px;
+  }
+  
+  button:hover {
+    background-color: #0056b3;
+  }
+  
