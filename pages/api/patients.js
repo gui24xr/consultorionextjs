@@ -2,7 +2,7 @@
 //EJEMPLO USANDO UN ARRAY
 
 
-import { syncAndConnectDatabase, Medic, Specialty, database, PersonalData, AddressData, Patient, Reservation } from "../../lib/db/database.index";
+import { syncAndConnectDatabase, Medic, Specialty, database, PersonalData, AddressData, Patient, Reservation, PatientHealthProvider } from "../../lib/db/database.index";
   
   
 
@@ -10,10 +10,9 @@ async function getAllPatients(){
   try{
       const patients = await Patient.findAll({
         include:[ 
-                  //{model: Specialty,attributes: ['name', 'code'] },
-                  //{model: AddressData},
                   {model: Reservation, as: 'reservationsList'},
                   {model: PersonalData, as:'personalData', include:{model:AddressData, as:'addressData'}},
+                  {model: PatientHealthProvider, as: 'healthProvidersList'}
                  
                 ]})
         return patients
@@ -25,11 +24,11 @@ async function getPatientById(patientId){
   try{
     const searchedPatient = await Patient.findByPk(patientId,{
       include:[ 
-                //{model: Specialty,attributes: ['name', 'code'] },
-                //{model: AddressData},
-                {model: PersonalData, as:'personalData', include:{model:AddressData, as: 'addressData'}},
-               
-              ]})
+        {model: Reservation, as: 'reservationsList'},
+        {model: PersonalData, as:'personalData', include:{model:AddressData, as:'addressData'}},
+        {model: PatientHealthProvider, as: 'healthProvidersList'}
+       
+      ]})
           return searchedPatient
   }catch(err){
     throw err
