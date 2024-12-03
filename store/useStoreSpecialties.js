@@ -6,6 +6,7 @@ import axios from 'axios'
 import {baseURLApi} from '../constants/constants.js'
 
 const baseURL = baseURLApi + '/specialties'
+//const baseURL = 'http://localhost:8080/api/specialties'
 
 const useStoreSpecialties = create((set,get) => ({
     specialtiesData: null,

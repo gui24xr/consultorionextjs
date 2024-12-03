@@ -41,7 +41,7 @@ const CreateAppointmentsForm = () => {
         >
 
         
-<div style={{ marginBottom: '10px' }}>
+        <div style={{ marginBottom: '10px' }}>
           <label htmlFor="pais">Servicio de consulta:</label>
           <select
             id="consultationServiceId"

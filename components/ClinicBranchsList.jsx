@@ -1,7 +1,7 @@
 import React,{useEffect} from 'react';
 import './styles/SpecialtiesList.css'
 import useStoreClinicBranchs from '../store/useClinicBranchsStore';
-import { isHTTPMethod } from 'next/dist/server/web/http';
+
 
 const ClinicBranchsList = () => {
 
