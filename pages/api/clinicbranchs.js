@@ -1,73 +1,31 @@
 
-import { syncAndConnectDatabase, ClinicBranch, ConsultingRoom, ConsultationService,Medic,PersonalData  } from "../../lib/db/database.index";
+import { syncAndConnectDatabase } from "../../lib/db/database.index";
+import { ClinicBranchsRepository } from "../../repositories/ClinicBranchsRepository";
 
   
-const joinList =[ 
-  {model: ConsultingRoom, include: [{model:ConsultationService,include:{model:Medic,include:{model:PersonalData}}}] }
-         ]
-
-
-async function deleteClinicBranchById(clinicBranchId){
-  try{
-    await ClinicBranch.destroy({where:{id:clinicBranchId}})
-    /*Probableente habria que borrar a mano la data personal y el addresData, queda en suspenso...*/   
-  }catch(err){
-    console.err(err)
-    throw err
-  }
-}
-
-
-async function getAllClinicBranchs(){
-  try{
-      const clinicBranchs = await ClinicBranch.findAll({
-        include:joinList})
-        return clinicBranchs
-  }catch(err){
-    throw err
-  }
-}
-
-async function getClinicBranchById(ClinicBranchId){
-  try{
-    const searchedClinicBranch = ClinicBranch.findByPk(ClinicBranchId,{
-        include:joinList
-    })
-    return searchedClinicBranch
-    }catch(err){
-      throw(err)
-  }
-}
-
-async function createClinicBranch(data){
-  try{
-    const newClinicBranch = await ClinicBranch.create(data)
-    const createdClinicBranch = await getClinicBranchById(newClinicBranch.clinicBranchId)
-    return createdClinicBranch
-  }catch(err){
-      throw err
-    }
-}
+const clinicBranchsRepository = new ClinicBranchsRepository()
 
   export default async function handler(req, res) {
     syncAndConnectDatabase()
+    
     switch (req.method) {
       case 'GET':
         // Lógica para manejar GET
-        const clinicBranchs = await getAllClinicBranchs()
+        const clinicBranchs =  await clinicBranchsRepository.getAll()
         res.status(200).json(clinicBranchs);
         break;
       case 'POST':
         // Lógica para manejar POST
-        const newClinicBranch = await createClinicBranch(req.body)
-        res.status(201).json(newClinicBranch);
+        const created = await clinicBranchsRepository.create(req.body)
+        res.status(201).json(created);
         break;
-      
+      case 'PUT':
+        break;
       case 'DELETE':
         const { id } = req.query // Obtener el ID del post a eliminar
-        await deleteClinicBranchById(id)
-        const updatedList = await getAllClinicBranchs()
-        res.status(200).json(updatedList);
+        const result = await clinicBranchsRepository.deleteById(id)
+        if (result > 0) res.status(200).json({message:'Eliminado con exito...'});
+        else res.status(500).json({message:'Registro no eliminado...'});
         break;
       default:
         res.setHeader('Allow', ['GET', 'POST', 'PUT', 'DELETE']);

@@ -1,74 +1,31 @@
 
-
-import { syncAndConnectDatabase, Reservation,Medic,  Appointment,Patient,PersonalData, ConsultationService } from "../../lib/db/database.index";
+import { syncAndConnectDatabase } from "../../lib/db/database.index";
+import { ReservationsRepository } from "../../repositories/ReservationsRepository";
 
   
-const joinList = [
-  {model:Patient,include:{model:PersonalData}},
-  {model:Appointment, include:{model:ConsultationService,include:{model:Medic, include:PersonalData}}}
-]
-
-async function deleteReservationById(id){
-  try{
-    await Reservation.destroy({where:{id:id}})
-    /*Probableente habria que borrar a mano la data personal y el addresData, queda en suspenso...*/
-    
-  }catch(err){
-    console.err(err)
-    throw err
-  }
-}
-
-
-async function getAllReservations(){
-  try{
-      const Reservations = await Reservation.findAll({
-        include:joinList})
-        return Reservations
-  }catch(err){
-    throw err
-  }
-}
-
-async function getReservationById(reservationId){
-  try{
-    const searchedReservation = Reservation.findByPk(reservationId,{
-        include:joinList})
-    return searchedReservation
-    }catch(err){
-      throw(err)
-  }
-}
-
-async function createReservation(data){
-  try{
-    const newReservation = await Reservation.create(data)
-    const createdReservation = await getReservationById(newReservation.id)
-    return createdReservation
-  }catch(err){
-      throw err
-    }
-}
+const reservationsRepository = new ReservationsRepository()
 
   export default async function handler(req, res) {
     syncAndConnectDatabase()
+    
     switch (req.method) {
       case 'GET':
         // Lógica para manejar GET
-        const reservations = await getAllReservations()
-        res.status(200).json(reservations);
+        const getResults =  await reservationsRepository.getAll()
+        res.status(200).json(getResults);
         break;
       case 'POST':
         // Lógica para manejar POST
-        const newReservation = await createReservation(req.body)
-        res.status(201).json(newReservation);
+        const created = await reservationsRepository.create(req.body)
+        res.status(201).json(created);
         break;
-     
+      case 'PUT':
+        break;
       case 'DELETE':
         const { id } = req.query // Obtener el ID del post a eliminar
-        await deleteReservationById(id)
-        const updatedList = await getAllReservations()
-        res.status(200).json(updatedList);
+        const result = await reservationsRepository.deleteById(id)
+        if (result > 0) res.status(200).json({message:'Eliminado con exito...'});
+        else res.status(500).json({message:'Registro no eliminado...'});
         break;
       default:
         res.setHeader('Allow', ['GET', 'POST', 'PUT', 'DELETE']);

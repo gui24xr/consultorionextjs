@@ -1,81 +1,35 @@
 
-import { syncAndConnectDatabase, HealthProvider, PatientHealthProvider, Patient, PersonalData } from "../../lib/db/database.index";
+import { syncAndConnectDatabase } from "../../lib/db/database.index";
+import { HealthProvidersRepository } from "../../repositories/HealthProvidersRepository";
 
-const joinList = [
-  {model: PatientHealthProvider ,  as: 'patientsList', include:{model:Patient, include:{model:PersonalData}}}
+  
+const healthProvidersRepository = new HealthProvidersRepository()
 
-]
-
-async function deleteHealthProviderById(id) {
-  try {
-    await HealthProvider.destroy({ where: { id: id } })
-    /*Probableente habria que borrar a mano la data personal y el addresData, queda en suspenso...*/
-
-  } catch (err) {
-    console.err(err)
-    throw err
+  export default async function handler(req, res) {
+    syncAndConnectDatabase()
+    
+    switch (req.method) {
+      case 'GET':
+        // Lógica para manejar GET
+        const getResults =  await healthProvidersRepository.getAll()
+        res.status(200).json(getResults);
+        break;
+      case 'POST':
+        // Lógica para manejar POST
+        const created = await healthProvidersRepository.create(req.body)
+        res.status(201).json(created);
+        break;
+      case 'PUT':
+        break;
+      case 'DELETE':
+        const { id } = req.query // Obtener el ID del post a eliminar
+        const result = await healthProvidersRepository.deleteById(id)
+        if (result > 0) res.status(200).json({message:'Eliminado con exito...'});
+        else res.status(500).json({message:'Registro no eliminado...'});
+        break;
+      default:
+        res.setHeader('Allow', ['GET', 'POST', 'PUT', 'DELETE']);
+        res.status(405).end(`Method ${req.method} Not Allowed`);
+        break;
+    }
   }
-}
-
-
-async function getAllHealthProviders() {
-  try {
-
-    const healthProviders = await HealthProvider.findAll({
-      include:joinList
-    })
-    return healthProviders
-  } catch (err) {
-    throw err
-  }
-}
-
-async function getHealthProviderById(healthProviderId) {
-  try {
-    const searchedHealthProvider = HealthProvider.findByPk(healthProviderId, {
-      include: joinList
-    })
-    return searchedHealthProvider
-  } catch (err) {
-    throw (err)
-  }
-}
-
-async function createHealthProvider(data) {
-  try {
-    const newHealthProvider = await HealthProvider.create(data)
-    const createdHealthProvider = await getHealthProviderById(newHealthProvider.healthProviderId)
-    return createdHealthProvider
-  } catch (err) {
-    throw err
-  }
-}
-
-export default async function handler(req, res) {
-  syncAndConnectDatabase()
-  switch (req.method) {
-    case 'GET':
-      // Lógica para manejar GET
-      const healthProviders = await getAllHealthProviders()
-      res.status(200).json(healthProviders);
-      break;
-    case 'POST':
-      // Lógica para manejar POST
-      const newHealthProvider = await createHealthProvider(req.body)
-      res.status(201).json(newHealthProvider);
-      break;
-
-    case 'DELETE':
-      const { id } = req.query // Obtener el ID del post a eliminar
-      await deleteHealthProviderById(id)
-      const updatedList = await getAllHealthProviders()
-      res.status(200).json(updatedList);
-      break;
-    default:
-      res.setHeader('Allow', ['GET', 'POST', 'PUT', 'DELETE']);
-      res.status(405).end(`Method ${req.method} Not Allowed`);
-      break;
-  }
-}
-
-

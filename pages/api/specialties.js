@@ -1,80 +1,31 @@
 
-import { syncAndConnectDatabase, Specialty,Medic, ConsultationService, PersonalData } from "../../lib/db/database.index";
-
+import { syncAndConnectDatabase } from "../../lib/db/database.index";
+import { SpecialtiesRepository } from "../../repositories/SpecialtiesRepository";
 
   
-const joinList= [ 
-  {model: Medic, include:{model:PersonalData} },
-
-         
-        ]
-
-async function deleteSpecialtyById(id){
-  try{
-    await Specialty.destroy({where:{id:id}})
-    /*Probableente habria que borrar a mano la data personal y el addresData, queda en suspenso...*/
-    
-  }catch(err){
-    console.err(err)
-    throw err
-  }
-}
-
-
-async function getAllSpecialties(){
-  try{
-      const specialties = await Specialty.findAll({
-        include:joinList})
-        return specialties
-  }catch(err){
-    throw err
-  }
-}
-
-async function getSpecialtyById(specialtyId){
-  try{
-    const searchedSpecialty = Specialty.findByPk(specialtyId,{
-      include:joinList
-    })
-    return searchedSpecialty
-    }catch(err){
-      throw(err)
-  }
-}
-
-async function createSpecialty(data){
-  try{
-    const newSpecialty = await Specialty.create(data)
-    const createdSpecialty = await getSpecialtyById(newSpecialty.id)
-    return createdSpecialty
-  }catch(err){
-      throw err
-    }
-}
+const specialtiesRepository = new SpecialtiesRepository()
 
   export default async function handler(req, res) {
     syncAndConnectDatabase()
+    
     switch (req.method) {
       case 'GET':
         // Lógica para manejar GET
-        const specialties = await getAllSpecialties()
+        const specialties =  await specialtiesRepository.getAll()
         res.status(200).json(specialties);
         break;
       case 'POST':
         // Lógica para manejar POST
-        const newSpecialty = await createSpecialty(req.body)
-        res.status(201).json(newSpecialty);
+        const created = await specialtiesRepository.create(req.body)
+        res.status(201).json(created);
         break;
       case 'PUT':
-        // Lógica para manejar PUT
-        const updatedPost = req.body; // Supón que tienes un post a actualizar
-        res.status(200).json({ posts: 'Post actualizado', post: updatedPost });
         break;
       case 'DELETE':
         const { id } = req.query // Obtener el ID del post a eliminar
-        await deleteSpecialtyById(id)
-        const updatedList = await getAllSpecialties()
-        res.status(200).json(updatedList);
+        const result = await specialtiesRepository.deleteById(id)
+        if (result > 0) res.status(200).json({message:'Eliminado con exito...'});
+        else res.status(500).json({message:'Registro no eliminado...'});
         break;
       default:
         res.setHeader('Allow', ['GET', 'POST', 'PUT', 'DELETE']);
