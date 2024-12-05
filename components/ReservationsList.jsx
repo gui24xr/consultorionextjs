@@ -9,8 +9,8 @@ const ReservationsList = () => {
         fetchReservationsData()
     },[])
 
-    const handlerDeleteBtn = (reservationId) =>{
-        deleteReservation(reservationId)
+    const handlerDeleteBtn = (id) =>{
+        deleteReservation(id)
       } 
     return (
         <div>
@@ -32,8 +32,8 @@ const ReservationsList = () => {
           <tbody>
             {
               reservationsData?.reverse().map((item) => (
-                <tr key={item.reservationId}>
-                  <td>{item.reservationId}</td>
+                <tr key={item.id}>
+                  <td>{item.id}</td>
                   <td>{item.code}</td>
                   <td>{item.status}</td>
                   <td>{item.patient?.patientRecord}</td>
@@ -45,7 +45,7 @@ const ReservationsList = () => {
                   
                     {/* Aquí puedes agregar botones para acciones adicionales */}
                     <button>Ver más</button>
-                    <button type='button' onClick={()=>handlerDeleteBtn(item.reservationId)}>Eliminar</button>
+                    <button type='button' onClick={()=>handlerDeleteBtn(item.id)}>Eliminar</button>
                   </td>
                 </tr>
               ))

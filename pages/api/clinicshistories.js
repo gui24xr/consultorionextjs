@@ -1,17 +1,12 @@
 import { syncAndConnectDatabase, Medic, Specialty, database, PersonalData, AddressData, ConsultationService, Patient, ConsultingRoom, Reservation, ClinicHistoryItem } from "../../lib/db/database.index";
 
-import { CustomRepository } from "../../lib/customRepositorie";
  
-/*class CustomRepository{
-    
-    
-    constructor(model,joinList){
+class CustomRepository{
+        constructor(model,joinList){
         this.model = model,
         this.joinList = joinList
     }
-
     async  getAll(){
-        
         try{
             const result = await this.model.findAll({
               include: this.joinList
@@ -21,11 +16,10 @@ import { CustomRepository } from "../../lib/customRepositorie";
           throw err
         }
     }
-    
-    
+   
     async  getById(id){
         try{
-          const searched = await this.model.findByPk(this.id,{
+          const searched = await this.model.findByPk(id,{
             include:this.joinList
         })
             return searched
@@ -55,29 +49,20 @@ import { CustomRepository } from "../../lib/customRepositorie";
         }
       }
     }
-    
-    
-*/
-
-class ClinicsHistoriesRepository extends CustomRepository{
-    
-constructor(){
-    super(Patient,[{model:PersonalData, as:'personalData'}])
-}
-
-}
 
 
 
 
 
-
-
+const joinList = [
+  {model:Patient, include:{model:PersonalData}},
+  {model:Medic, include:{model:PersonalData}}
+]
 //---------------------------------------------
 
 export default async function handler(req, res) {
     syncAndConnectDatabase()
-    const clinicsHistoriesRepository = new ClinicsHistoriesRepository()
+    const clinicsHistoriesRepository = new CustomRepository(ClinicHistoryItem,joinList)
     switch (req.method) {
       case 'GET':
         //Este endpoint devuelve todos los registros.

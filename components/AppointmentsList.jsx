@@ -12,8 +12,8 @@ const AppointmentsList = () => {
 
     
   
-  const handlerDeleteBtn = (appointmentId) =>{
-    deleteAppointment(appointmentId)
+  const handlerDeleteBtn = (id) =>{
+    deleteAppointment(id)
   }
 
     return (
@@ -39,8 +39,8 @@ const AppointmentsList = () => {
           <tbody>
             {
               appointmentsData?.reverse().map((item) => (
-                <tr key={item.appointmentId}>
-                  <td>{item.appointmentId}</td>
+                <tr key={item.id}>
+                  <td>{item.id}</td>
                   <td>{item.appointmentNumber}</td>
                   <td>{item.date}</td>
                   <td>{item.hour}</td>
@@ -52,7 +52,7 @@ const AppointmentsList = () => {
                   <td>
                   
                     <button>Ver más</button>
-                    <button type='button' onClick={()=>handlerDeleteBtn(item.appointmentId)}>Eliminar</button>
+                    <button type='button' onClick={()=>handlerDeleteBtn(item.id)}>Eliminar</button>
                   </td>
                 </tr>
               ))

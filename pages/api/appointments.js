@@ -1,22 +1,26 @@
-import { syncAndConnectDatabase, Medic, Specialty, database, PersonalData, AddressData, ConsultationService, Appointment, Patient, ConsultingRoom, Reservation } from "../../lib/db/database.index";
+import { syncAndConnectDatabase, Medic, PersonalData,  ConsultationService, Appointment, Patient, ConsultingRoom, Reservation } from "../../lib/db/database.index";
+
+/*
+const joinList = [
+  { model: Reservation, as: 'reservations',include:[{model:Patient,include:[{model:PersonalData, as: 'personalData'}]}]},
+  { model: ConsultationService, as:'consultationServices', include:[
+                                                  { model:ConsultingRoom },{model:Medic, as:'medics',include:{model:PersonalData, as:'personalData'}},
+] 
+},
+]
+*/
+
+const joinList = [
+  { model: Reservation, include:{model:Patient,include:{model:PersonalData}} },
+  {model: ConsultationService, include:[{model:ConsultingRoom},{model:Medic,include:{model:PersonalData}}]}
+]
 
 
 
 async function getAllAppointments(){
     try{
         const appointments = await Appointment.findAll({
-          include:[
-            {model: Reservation, as: 'reservation',include:[{model:Patient,include:[{model:PersonalData, as: 'personalData'}]}]},
-            { 
-            model: ConsultationService, 
-            as:'consultationServiceData', 
-            include:[{
-              model:ConsultingRoom
-            },{model:Medic, as:'medicData',include:{model:PersonalData, as:'personalData'}},
-      ] 
-          },
-               
-          ]})
+          include:joinList})
           return appointments
     }catch(err){
       throw err
@@ -28,18 +32,7 @@ async function getAllAppointments(){
 async function getAppointmentById(appointmentId){
     try{
       const searchedAppointment = await Appointment.findByPk(appointmentId,{
-        include:[
-          {model: Reservation},
-          { 
-          model: ConsultationService, 
-          as:'consultationServiceData', 
-          include:[{
-            model:ConsultingRoom
-          },{model:Medic, as:'medicData',include:{model:PersonalData, as:'personalData'}},
-    ] 
-        },
-             
-        ]})
+        include:joinList})
             return searchedAppointment
     }catch(err){
       throw err
@@ -65,7 +58,7 @@ async function getAppointmentById(appointmentId){
     
   async function deleteAppointmentById(appointmentId){
     try{
-      await Appointment.destroy({where:{appointmentId:appointmentId}})
+      await Appointment.destroy({where:{id:appointmentId}})
       /*Probableente habria que borrar a mano la data personal y el addresData, queda en suspenso...*/
       
     }catch(err){

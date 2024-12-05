@@ -14,8 +14,8 @@ const ConsultationsServiceList = () => {
   }, []);
 
   
-  const handlerDeleteBtn = (consultationServiceId) =>{
-    deleteConsultationService(consultationServiceId)
+  const handlerDeleteBtn = (id) =>{
+    deleteConsultationService(id)
   }
 
     return (
@@ -35,18 +35,18 @@ const ConsultationsServiceList = () => {
           <tbody>
             {
               consultationServicesData?.reverse().map((item) => (
-                <tr key={item.consultationServiceId}>
-                  <td>{item.consultationServiceId}</td>
+                <tr key={item.id}>
+                  <td>{item.id}</td>
                   <td>{item.serviceName}</td>
 
-                  <td>{item.specialtyData?.name}</td>
-                  <td>{item.specialtyData?.code}</td>
-                  <td>{item.medicData?.personalData?.lastName} {item.medicData?.personalData?.firstName}</td>
+                  <td>{item.specialty?.name}</td>
+                  <td>{item.specialty?.code}</td>
+                  <td>{item.medic?.personalData?.lastName} {item.medic?.personalData?.firstName}</td>
                   <td>{item.consultingRoom?.name}</td>
                 
                   <td>
                     <button>Ver más</button>
-                    <button type='button' onClick={()=>handlerDeleteBtn(item.consultationServiceId)}>Eliminar</button>
+                    <button type='button' onClick={()=>handlerDeleteBtn(item.id)}>Eliminar</button>
                   </td>
                 </tr>
               ))

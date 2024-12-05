@@ -2,19 +2,21 @@
 //EJEMPLO USANDO UN ARRAY
 
 
-import { syncAndConnectDatabase, Medic, Specialty, database, PersonalData, AddressData, Patient, Reservation, PatientHealthProvider } from "../../lib/db/database.index";
+import { syncAndConnectDatabase, Medic, Specialty, database, PersonalData, AddressData, Patient, Reservation, PatientHealthProvider, Appointment, ConsultationService, HealthProvider } from "../../lib/db/database.index";
+
   
   
+const joinList = [ 
+  {model:PersonalData, include:{model:AddressData}},
+  {model: Reservation, include:{model:Appointment,include:{model:ConsultationService,include:{model:Medic,include:{model:PersonalData}}}}},
+  {model:PatientHealthProvider,  include:{model:HealthProvider}}
+ 
+]
 
 async function getAllPatients(){
   try{
       const patients = await Patient.findAll({
-        include:[ 
-                  {model: Reservation, as: 'reservationsList'},
-                  {model: PersonalData, as:'personalData', include:{model:AddressData, as:'addressData'}},
-                  {model: PatientHealthProvider, as: 'healthProvidersList'}
-                 
-                ]})
+        include:joinList})
         return patients
   }catch(err){
     throw err
@@ -23,18 +25,14 @@ async function getAllPatients(){
 async function getPatientById(patientId){
   try{
     const searchedPatient = await Patient.findByPk(patientId,{
-      include:[ 
-        {model: Reservation, as: 'reservationsList'},
-        {model: PersonalData, as:'personalData', include:{model:AddressData, as:'addressData'}},
-        {model: PatientHealthProvider, as: 'healthProvidersList'}
-       
-      ]})
+      include:joinList})
           return searchedPatient
   }catch(err){
     throw err
   }
 }
   async function createPatient(data){
+    const dbTransaction =  await database.transaction()
     try{
       const {dni, firstName,lastName,patientRecord,dateOfBirth,dateOfRegistration} = data
 
@@ -43,22 +41,22 @@ async function getPatientById(patientId){
       const addressDataTable = {}
       
       //Abro el transaction
-      const dbTransaction =  await database.transaction()
+      
 
       const newPatient = await Patient.create(patientsTable,{raw:true})
       if (!newPatient) throw new Error("Error creando patient data...")
 
-      const newPersonalData = await PersonalData.create({...personalDataTable,patientId:newPatient.patientId},{raw:true})
+      const newPersonalData = await PersonalData.create({...personalDataTable,patientId:newPatient.id},{raw:true})
       if (!newPersonalData) throw new Error("Error creando personal data de patient...")
 
   
-      await AddressData.create({...addressDataTable,personalDataId: newPersonalData.personalDataId})
+      await AddressData.create({...addressDataTable,personalDataId: newPersonalData.id})
       //cierro el transactioon
      await dbTransaction.commit()
      
   
       //Reutilizo codigo asi se devolveran todos los medicos. 
-      const createdPatient = await getPatientById(newPatient.patientId)
+      const createdPatient = await getPatientById(newPatient.id)
       return createdPatient
 
     }catch(err){
@@ -69,9 +67,9 @@ async function getPatientById(patientId){
   }
 
 
-  async function deletePatientById(patientId){
+  async function deletePatientById(id){
     try{
-      await Patient.destroy({where:{patientId:patientId}})
+      await Patient.destroy({where:{id:id}})
       /*Probableente habria que borrar a mano la data personal y el addresData, queda en suspenso...*/
       
     }catch(err){

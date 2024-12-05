@@ -18,6 +18,7 @@ const useStoreSpecialties = create((set,get) => ({
         try {
          
             const response = await axios.get(baseURL);  
+            console.log(response)
             set({ specialtiesData: response.data, loading: false });
           } catch (error) {
             set({ error: error.message, loading: false });

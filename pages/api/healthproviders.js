@@ -1,10 +1,14 @@
 
-import { syncAndConnectDatabase, HealthProvider, PatientHealthProvider } from "../../lib/db/database.index";
+import { syncAndConnectDatabase, HealthProvider, PatientHealthProvider, Patient, PersonalData } from "../../lib/db/database.index";
 
+const joinList = [
+  {model: PatientHealthProvider ,  as: 'patientsList', include:{model:Patient, include:{model:PersonalData}}}
 
-async function deleteHealthProviderById(healthProviderId) {
+]
+
+async function deleteHealthProviderById(id) {
   try {
-    await HealthProvider.destroy({ where: { healthProviderId: healthProviderId } })
+    await HealthProvider.destroy({ where: { id: id } })
     /*Probableente habria que borrar a mano la data personal y el addresData, queda en suspenso...*/
 
   } catch (err) {
@@ -18,10 +22,7 @@ async function getAllHealthProviders() {
   try {
 
     const healthProviders = await HealthProvider.findAll({
-      include: [
-        {model: PatientHealthProvider ,  as: 'patientsList'}
-
-      ]
+      include:joinList
     })
     return healthProviders
   } catch (err) {
@@ -32,10 +33,7 @@ async function getAllHealthProviders() {
 async function getHealthProviderById(healthProviderId) {
   try {
     const searchedHealthProvider = HealthProvider.findByPk(healthProviderId, {
-      include: [
-        {model: PatientHealthProvider ,  as: 'patientsList'}
-
-      ]
+      include: joinList
     })
     return searchedHealthProvider
   } catch (err) {

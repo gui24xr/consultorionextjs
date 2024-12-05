@@ -103,12 +103,12 @@ const CreatePatientForm = () => {
         <div style={{ marginBottom: '10px' }}>
         <label htmlFor="pais">Seleccionar especialidad:</label>
         <select
-          id="specialties"
+          id="specialtyId"
           name="specialtyId" >
           {
             specialtiesData?.map(item => (<option 
-                key={item.specialtyId} 
-                value={item.specialtyId}>{item.name}/{item.code}
+                key={item.id} 
+                value={item.id}>{item.name}/{item.code}
                 </option>))
           }
         </select> 

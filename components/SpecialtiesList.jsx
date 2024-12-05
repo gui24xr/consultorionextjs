@@ -38,14 +38,14 @@ const SpecialtiesList = () => {
         <tbody>
           {
             specialtiesList?.reverse().map((item) => (
-              <tr key={item.specialtyId}>
-                <td>{item.specialtyId}</td>
+              <tr key={item.id}>
+                <td>{item.id}</td>
                 <td>{item.name}</td>
                 <td>{item.code}</td>
                 <td>
                   {/* Aquí puedes agregar botones para acciones adicionales */}
                   <button>Ver más</button>
-                  <button type='button' onClick={()=>handlerDeleteBtn(item.specialtyId)}>Eliminar</button>
+                  <button type='button' onClick={()=>handlerDeleteBtn(item.id)}>Eliminar</button>
                 </td>
               </tr>
             ))

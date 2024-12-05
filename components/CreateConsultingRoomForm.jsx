@@ -55,8 +55,8 @@ const CreateConsultingRoomForm = () => {
              >
           {
             clinicBranchsData?.map(item => (<option 
-                key={item.clinicBranchId} 
-                value={item.clinicBranchId}>{item.name}
+                key={item.id} 
+                value={item.id}>{item.name}
                 </option>))
           }
          </select> 

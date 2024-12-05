@@ -50,8 +50,8 @@ const CreateAppointmentsForm = () => {
              >
           {
             consultationServicesData?.map(item => (<option 
-                key={item.consultationServiceId} 
-                value={item.consultationServiceId}>{item.serviceName}
+                key={item.id} 
+                value={item.id}>{item.serviceName}
                 </option>))
           }
          </select> 

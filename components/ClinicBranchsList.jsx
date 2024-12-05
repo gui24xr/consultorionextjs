@@ -11,8 +11,8 @@ const ClinicBranchsList = () => {
         fetchClinicBranchsData()
     },[])
 
-    const handlerDeleteBtn = (clinicBranchId) =>{
-        deleteClinicBranch(clinicBranchId)
+    const handlerDeleteBtn = (id) =>{
+        deleteClinicBranch(id)
       }
 
     return (
@@ -34,18 +34,18 @@ const ClinicBranchsList = () => {
           <tbody>
             {
               clinicBranchsData?.reverse().map((item) => (
-                <tr key={item.clinicBranchId}>
-                  <td>{item.clinicBranchId}</td>
+                <tr key={item.id}>
+                  <td>{item.id}</td>
                   <td>{item.name}</td>
                   <td>IMPLEMENTAR</td>
                   <td>IMPLEMENTAR</td>
                 
-                  <td>{item.consultingRoomsList?.length || 'S/D' }</td>
+                  <td>{item.consultingRooms?.length || 'S/D' }</td>
                   <td>
                   
                     {/* Aquí puedes agregar botones para acciones adicionales */}
                     <button>Ver más</button>
-                    <button type='button' onClick={()=>handlerDeleteBtn(item.clinicBranchId)}>Eliminar</button>
+                    <button type='button' onClick={()=>handlerDeleteBtn(item.id)}>Eliminar</button>
                   </td>
                 </tr>
               ))

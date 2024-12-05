@@ -1,13 +1,17 @@
 
 
-import { syncAndConnectDatabase, ClinicBranch, ConsultingRoom, ConsultationService  } from "../../lib/db/database.index";
+import { syncAndConnectDatabase, ClinicBranch, ConsultingRoom, ConsultationService,Medic,PersonalData  } from "../../lib/db/database.index";
 
   
+const joinList = [ 
+  {model: ClinicBranch},
+  {model: ConsultationService,include:{model:Medic,include:[PersonalData]}}
+]
 
 
-async function deleteConsultingRoomById(ConsultingRoomId){
+async function deleteConsultingRoomById(id){
   try{
-    await ConsultingRoom.destroy({where:{consultingRoomId:ConsultingRoomId}})
+    await ConsultingRoom.destroy({where:{id:id}})
     /*Probableente habria que borrar a mano la data personal y el addresData, queda en suspenso...*/   
   }catch(err){
     console.err(err)
@@ -19,11 +23,7 @@ async function deleteConsultingRoomById(ConsultingRoomId){
 async function getAllConsultingRooms(){
   try{
       const ConsultingRooms = await ConsultingRoom.findAll({
-        include:[ 
-          {model: ClinicBranch/* , as:'consultingRoomsList'*/},
-          {model: ConsultationService, as:'consultationServiceList'}
-                 
-                ]})
+        include:joinList})
         return ConsultingRooms
   }catch(err){
     throw err
@@ -33,10 +33,7 @@ async function getAllConsultingRooms(){
 async function getConsultingRoomById(ConsultingRoomId){
   try{
     const searchedConsultingRoom = ConsultingRoom.findByPk(ConsultingRoomId,{
-        include:[ 
-            {model: ClinicBranch/* , as:'consultingRoomsList'*/}
-                   
-                  ]
+        include:joinList
     })
     return searchedConsultingRoom
     }catch(err){

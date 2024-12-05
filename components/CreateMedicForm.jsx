@@ -21,6 +21,7 @@ const CreateMedicForm = () => {
         const formData = new FormData(e.target)
         const formValues = Object.fromEntries(formData.entries())
         //Paso formValues xq los name del form coincidencon lo qu hay que enviar al api
+        
         createMedic(formValues)
     }
 
@@ -110,8 +111,8 @@ const CreateMedicForm = () => {
              >
           {
             specialtiesData?.map(item => (<option 
-                key={item.specialtyId} 
-                value={item.specialtyId}>{item.name}/{item.code}
+                key={item.id} 
+                value={item.id}>{item.name}/{item.code}
                 </option>))
           }
          </select> 

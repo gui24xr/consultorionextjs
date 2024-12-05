@@ -8,8 +8,8 @@ const ConsultingRoomsList = () => {
         fetchConsultingRoomsData()
     },[])
 
-    const handlerDeleteBtn = (consultingRoomId) =>{
-        deleteConsultingRoom(consultingRoomId)
+    const handlerDeleteBtn = (id) =>{
+        deleteConsultingRoom(id)
       }
 
     return (
@@ -30,8 +30,8 @@ const ConsultingRoomsList = () => {
           <tbody>
             {
               consultingRoomsData?.reverse().map((item) => (
-                <tr key={item.consultingRoomId}>
-                  <td>{item.consultingRoomId}</td>
+                <tr key={item.id}>
+                  <td>{item.id}</td>
                   <td>{item.name}</td>
                   <td>{item.clinicBranch?.name}</td>
                   <td>{item.status}</td>
@@ -39,7 +39,7 @@ const ConsultingRoomsList = () => {
                  
                   <td>
                     <button>Ver más</button>
-                    <button type='button' onClick={()=>handlerDeleteBtn(item.consultingRoomId)}>Eliminar</button>
+                    <button type='button' onClick={()=>handlerDeleteBtn(item.id)}>Eliminar</button>
                   </td>
                 </tr>
               ))

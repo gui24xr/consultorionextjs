@@ -30,8 +30,8 @@ const PatientHealthProvidersList = () => {
           <tbody>
             {
               patientHealthProvidersData?.reverse().map((item) => (
-                <tr key={item.patientHealthProviderId}>
-                  <td>{item.patientHealthProviderId}</td>
+                <tr key={item.id}>
+                  <td>{item.id}</td>
                   <td>{item.patient?.patientRecord} + "||" {item.patient?.personalData?.lastName + item.patient?.personalData?.firstName} </td>
                   <td>{item.healthProvider?.providerName} {item.healthProvider?.planName} {" || " + item.healthProvider?.status}</td>
             
@@ -41,7 +41,7 @@ const PatientHealthProvidersList = () => {
                   
                     {/* Aquí puedes agregar botones para acciones adicionales */}
                     <button>Ver más</button>
-                    <button type='button' onClick={()=>handlerDeleteBtn(item.reservationId)}>Eliminar</button>
+                    <button type='button' onClick={()=>handlerDeleteBtn(item.id)}>Eliminar</button>
                   </td>
                 </tr>
               ))

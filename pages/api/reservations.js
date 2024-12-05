@@ -1,12 +1,16 @@
 
+
 import { syncAndConnectDatabase, Reservation,Medic,  Appointment,Patient,PersonalData, ConsultationService } from "../../lib/db/database.index";
 
   
+const joinList = [
+  {model:Patient,include:{model:PersonalData}},
+  {model:Appointment, include:{model:ConsultationService,include:{model:Medic, include:PersonalData}}}
+]
 
-
-async function deleteReservationById(reservationId){
+async function deleteReservationById(id){
   try{
-    await Reservation.destroy({where:{reservationId:reservationId}})
+    await Reservation.destroy({where:{id:id}})
     /*Probableente habria que borrar a mano la data personal y el addresData, queda en suspenso...*/
     
   }catch(err){
@@ -19,11 +23,7 @@ async function deleteReservationById(reservationId){
 async function getAllReservations(){
   try{
       const Reservations = await Reservation.findAll({
-        include:[ 
-            {model: Patient, include:[{model:PersonalData, as:'personalData'}] },
-           {model: Appointment, include:[{model: ConsultationService, as: 'consultationServiceData'}]}
-                   
-                  ]})
+        include:joinList})
         return Reservations
   }catch(err){
     throw err
@@ -33,11 +33,7 @@ async function getAllReservations(){
 async function getReservationById(reservationId){
   try{
     const searchedReservation = Reservation.findByPk(reservationId,{
-        include:[ 
-            {model: Patient },
-           {model: Appointment}
-                  
-                  ]})
+        include:joinList})
     return searchedReservation
     }catch(err){
       throw(err)
@@ -47,7 +43,7 @@ async function getReservationById(reservationId){
 async function createReservation(data){
   try{
     const newReservation = await Reservation.create(data)
-    const createdReservation = await getReservationById(newReservation.reservationId)
+    const createdReservation = await getReservationById(newReservation.id)
     return createdReservation
   }catch(err){
       throw err

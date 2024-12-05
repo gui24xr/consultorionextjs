@@ -55,8 +55,8 @@ const CreateReservation = () => {
              >
           {
             appointmentsData?.map(item => (<option 
-                key={item.appointmentId} 
-                value={item.appointmentId}>
+                key={item.id} 
+                value={item.id}>
                     {item.consultationServiceData?.serviceName} -- {"Turno num " + item.appointmentNumber} -- {item.date} --{item.hour}
                 </option>))
           }
@@ -72,8 +72,8 @@ const CreateReservation = () => {
              >
           {
             patientsData?.map(item => (<option 
-                key={item.patientId} 
-                value={item.patientId}>
+                key={item.id} 
+                value={item.id}>
                     {"Leg:"+ item.patientRecord + " - " +item.personalData?.lastName + " - " +item.personalData?.firstName}  
                 </option>))
           }

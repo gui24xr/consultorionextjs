@@ -26,6 +26,7 @@ const CreateConsultationServiceForm = () => {
         const formData = new FormData(e.target)
         const formValues = Object.fromEntries(formData.entries())
         //Paso formValues xq los name del form coincidencon lo qu hay que enviar al api
+        console.log(formValues)
         createConsultationService(formValues)
     }
 
@@ -70,8 +71,8 @@ const CreateConsultationServiceForm = () => {
              >
           {
             specialtiesData?.map(item => (<option 
-                key={item.specialtyId} 
-                value={item.specialtyId}>{item.name}/{item.code}
+                key={item.id} 
+                value={item.id}>{item.name}-{item.code}
                 </option>))
           }
          </select> 
@@ -86,8 +87,8 @@ const CreateConsultationServiceForm = () => {
              >
           {
             medicsData?.map(item => (<option 
-                key={item.medicId} 
-                value={item.medicId}>
+                key={item.id} 
+                value={item.id}>
                   <span style={{ fontWeight: 'bold'}}>{item.personalData?.lastName} {item.personalData?.firstName}</span> /
                   {item.specialty?.name} // 
                   Legajo:{item.medicRecord}'
@@ -105,8 +106,8 @@ const CreateConsultationServiceForm = () => {
              >
           {
             consultingRoomsData?.map(item => (<option 
-                key={item.consultingRoomId} 
-                value={item.consultingRoomId}>{item.name}
+                key={item.id} 
+                value={item.id}>{item.name}
                 </option>))
           }
          </select> 

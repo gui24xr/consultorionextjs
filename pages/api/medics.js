@@ -1,19 +1,19 @@
 // pages/api/posts.js
 //EJEMPLO USANDO UN ARRAY
-import { syncAndConnectDatabase, Medic, Specialty, database, PersonalData, AddressData } from "../../lib/db/database.index";
+import { syncAndConnectDatabase, Medic, Specialty, database, PersonalData,ConsultationService, AddressData, ConsultingRoom } from "../../lib/db/database.index";
 
 
-
+const joinList = [ 
+  {model: Specialty },
+  {model: PersonalData,include:{model:AddressData}},
+  {model: ConsultationService, include:{model:ConsultingRoom}}
+ 
+]
 
 async function getAllMedics(){
   try{
       const medics = await Medic.findAll({
-        include:[ 
-                  {model: Specialty,attributes: ['name', 'code'] },
-                  //{model: AddressData},
-                  {model: PersonalData, as: 'personalData',include:{model:AddressData, as: 'addressData'}},
-                 
-                ]})
+        include:joinList})
         return medics
   }catch(err){
     throw err
@@ -23,21 +23,15 @@ async function getAllMedics(){
 async function getMedicById(medicId){
   try{
     const searchedMedic = await Medic.findByPk(medicId,{
-      include:[ 
-                {model: Specialty,attributes: ['name', 'code'] },
-                //{model: AddressData},
-                {model: PersonalData,as: 'personalData', include:{model:AddressData,  as: 'addressData'}},
-               
-              ]})
+      include:joinList})
           return searchedMedic
   }catch(err){
     throw err
   }
 }
   async function createMedic(data){
+    const dbTransaction =  await database.transaction()
     try{
-
-      const dbTransaction =  await database.transaction()
 
       const {dni, firstName,lastName,medicRecord,medicLicenceNumber,specialtyId,dateOfRegistration} = data
 
@@ -47,19 +41,19 @@ async function getMedicById(medicId){
       
       //Abro el transaction
       const newMedic = await Medic.create(medicsTable,{raw:true})
-      if (!newMedic) throw new Error("Error creando personal data...")
+      if (!newMedic) throw new Error("Error creando registro medicos...")
 
-      const newPersonalData = await PersonalData.create({...personalDataTable,medicId:newMedic.medicId},{raw:true})
+      const newPersonalData = await PersonalData.create({...personalDataTable,medicId:newMedic.id},{raw:true})
       if (!newPersonalData) throw new Error("Error creando personal data...")
 
   
-      await AddressData.create({...addressDataTable,personalDataId: newPersonalData.personalDataId})
+      await AddressData.create({...addressDataTable,personalDataId: newPersonalData.id})
       
       //cierro el transactioon
       await dbTransaction.commit()
     
       //Reutilizo codigo asi se devolveran todos los medicos. 
-      const createdMedic = await getMedicById(newMedic.medicId)
+      const createdMedic = await getMedicById(newMedic.id)
       return createdMedic
 
     }catch(err){
@@ -68,9 +62,9 @@ async function getMedicById(medicId){
     }
   }
 
-  async function deleteMedicById(medicId){
+  async function deleteMedicById(id){
     try{
-      await Medic.destroy({where:{medicId:medicId}})
+      await Medic.destroy({where:{id:id}})
       /*Probableente habria que borrar a mano la data personal y el addresData, queda en suspenso...*/
       
     }catch(err){
@@ -100,11 +94,7 @@ async function getMedicById(medicId){
           
 
         break;
-      case 'PUT':
-        // Lógica para manejar PUT
-        const updatedPost = req.body; // Supón que tienes un post a actualizar
-        res.status(200).json({ posts: 'Post actualizado', post: updatedPost });
-        break;
+     
       case 'DELETE':
         // Lógica para manejar DELETE
         const { id } = req.query // Obtener el ID del post a eliminar

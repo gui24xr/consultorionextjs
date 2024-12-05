@@ -1,17 +1,17 @@
 
-import { syncAndConnectDatabase, Medic, Specialty, database, PersonalData, AddressData, ConsultationService,ConsultingRoom } from "../../lib/db/database.index";
+import { syncAndConnectDatabase, Medic, PersonalData, , ConsultationService,ConsultingRoom } from "../../lib/db/database.index";
 
 
+
+const joinList = [ 
+    {model:ConsultingRoom},
+    {model:Medic, include:{model:PersonalData}}     
+]
 
 async function getAllConsultationService(){
     try{
         const consultationServices = await ConsultationService.findAll({
-          include:[ 
-                    {model:ConsultingRoom, },
-                    {model: Specialty,attributes: ['name', 'code'], as:'specialtyData' },
-                    //{model: AddressData},
-                    {model: Medic, as: 'medicData', include:[{model:PersonalData, as: 'personalData'}]},                   
-                  ]},
+          include:joinList},
                 )
           return consultationServices
     }catch(err){
@@ -24,11 +24,7 @@ async function getAllConsultationService(){
 async function getConsultationServiceById(consultationServiceId){
     try{
       const searchedConsultationService = await ConsultationService.findByPk(consultationServiceId,{
-        include:[ 
-          {model: Specialty,attributes: ['name', 'code'], as:'specialtyData' },
-          //{model: AddressData},
-          {model: Medic, as: 'medicData', include:[{model:PersonalData, as: 'personalData'}]},                   
-        ]})
+        include:joinList})
             return searchedConsultationService
     }catch(err){
       throw err
@@ -38,11 +34,12 @@ async function getConsultationServiceById(consultationServiceId){
       try{
          const {serviceName,specialtyId,medicId,consultingRoomId} = data
 
-         
-        const newConsultationService = await ConsultationService.create({serviceName,specialtyId,medicId,consultingRoomId},{raw:true})
+         console.log(data)
+
+        const newConsultationService = await ConsultationService.create(data,{raw:true})
         if (!newConsultationService) throw new Error("Error creando servicio de consultorio...")
         //Reutilizo codigo asi se devolveran todos los medicos. 
-        const createdConsultationService = await getConsultationServiceById(newConsultationService.consultationServiceId)
+        const createdConsultationService = await getConsultationServiceById(newConsultationService.id)
         return createdConsultationService
   
       }catch(err){
@@ -53,7 +50,7 @@ async function getConsultationServiceById(consultationServiceId){
     
   async function deleteConsultationServiceById(consultationServiceId){
     try{
-      await ConsultationService.destroy({where:{consultationServiceId:consultationServiceId}})
+      await ConsultationService.destroy({where:{id:consultationServiceId}})
       /*Probableente habria que borrar a mano la data personal y el addresData, queda en suspenso...*/
       
     }catch(err){

@@ -1,12 +1,17 @@
 
-import { syncAndConnectDatabase, Specialty,Medic } from "../../lib/db/database.index";
+import { syncAndConnectDatabase, Specialty,Medic, ConsultationService, PersonalData } from "../../lib/db/database.index";
+
 
   
+const joinList= [ 
+  {model: Medic, include:{model:PersonalData} },
 
+         
+        ]
 
-async function deleteSpecialtyById(specialtyId){
+async function deleteSpecialtyById(id){
   try{
-    await Specialty.destroy({where:{specialtyId:specialtyId}})
+    await Specialty.destroy({where:{id:id}})
     /*Probableente habria que borrar a mano la data personal y el addresData, queda en suspenso...*/
     
   }catch(err){
@@ -19,10 +24,7 @@ async function deleteSpecialtyById(specialtyId){
 async function getAllSpecialties(){
   try{
       const specialties = await Specialty.findAll({
-        include:[ 
-          {model: Medic , as:'medics'}
-                 
-                ]})
+        include:joinList})
         return specialties
   }catch(err){
     throw err
@@ -32,9 +34,7 @@ async function getAllSpecialties(){
 async function getSpecialtyById(specialtyId){
   try{
     const searchedSpecialty = Specialty.findByPk(specialtyId,{
-      include:[
-        {model: Medic , as:'medics'}
-      ]
+      include:joinList
     })
     return searchedSpecialty
     }catch(err){
@@ -45,7 +45,7 @@ async function getSpecialtyById(specialtyId){
 async function createSpecialty(data){
   try{
     const newSpecialty = await Specialty.create(data)
-    const createdSpecialty = await getSpecialtyById(newSpecialty.specialtyId)
+    const createdSpecialty = await getSpecialtyById(newSpecialty.id)
     return createdSpecialty
   }catch(err){
       throw err

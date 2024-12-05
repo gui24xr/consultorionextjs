@@ -44,8 +44,8 @@ const CreatePatientHealthProviderForm = () => {
               >
            {
              patientsData?.map(item => (<option 
-                 key={item.patientId} 
-                 value={item.patientId}>
+                 key={item.id} 
+                 value={item.id}>
                      {"Leg:"+ item.patientRecord + " - " +item.personalData?.memberNumber + " - " +item.personalData?.firstName}  
                  </option>))
            }
@@ -62,8 +62,8 @@ const CreatePatientHealthProviderForm = () => {
               >
            {
              healthProvidersData?.map(item => (<option 
-                 key={item.healthProviderId} 
-                 value={item.healthProviderId}>
+                 key={item.id} 
+                 value={item.id}>
                      { item.providerName + " -- " + item.planName}  
                  </option>))
            }

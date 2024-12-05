@@ -12,8 +12,8 @@ const PatientsList = () => {
   }, []);
 
   
-  const handlerDeleteBtn = (patientId) =>{
-    deletePatient(patientId)
+  const handlerDeleteBtn = (id) =>{
+    deletePatient(id)
   }
 
   return (
@@ -36,8 +36,8 @@ const PatientsList = () => {
         <tbody>
           {
             patientsData?.reverse().map((item) => (
-              <tr key={item.patientId}>
-                <td>{item.patientId}</td>
+              <tr key={item.id}>
+                <td>{item.id}</td>
                 <td>{item.patientRecord}</td>
                 <td>{item.dateOfBirth}</td>
                 <td>{item.dateOfRegistration}</td>
@@ -47,7 +47,7 @@ const PatientsList = () => {
                 <td>
                   {/* Aquí puedes agregar botones para acciones adicionales */}
                   <button>Ver más</button>
-                  <button type='button' onClick={()=>handlerDeleteBtn(item.patientId)}>Eliminar</button>
+                  <button type='button' onClick={()=>handlerDeleteBtn(item.id)}>Eliminar</button>
                 </td>
               </tr>
             ))
