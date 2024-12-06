@@ -1,5 +1,5 @@
 
-import { Patient,PersonalData, AddressData, Appointment, ConsultationService, Medic, PatientHealthProvider, HealthProvider, Reservation } from "../lib/db/database.index"
+import { Patient,PersonalData, AddressData, Appointment, ConsultationService, Medic, PatientHealthProvider, HealthProvider, Reservation, ClinicHistoryItem } from "../lib/db/database.index"
 
 export class PatientsRepository{
   
@@ -7,7 +7,8 @@ model = Patient
 joinList = [ 
    {model:PersonalData, include:{model:AddressData}},
    {model: Reservation, include:{model:Appointment,include:{model:ConsultationService,include:{model:Medic,include:{model:PersonalData}}}}},
-   {model:PatientHealthProvider,  include:{model:HealthProvider}}
+   {model: ClinicHistoryItem, include:{model:Medic, include: PersonalData}},
+   {model:PatientHealthProvider, include:{model:HealthProvider}}
   
  ]
 

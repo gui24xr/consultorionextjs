@@ -1,12 +1,12 @@
 
-import { MedicHealthProvider, HealthProvider, Patient, PersonalData } from "../lib/db/database.index"
+import { MedicHealthProvider, HealthProvider, Medic, PersonalData } from "../lib/db/database.index"
 
 export class MedicsHealthsProvidersRepository{
   
 model = MedicHealthProvider
 joinList = [
-   {model: HealthProvider },
-   {model: Patient, include:[{model: PersonalData}]}
+   //{model: HealthProvider },
+   //{model: Medic, include:[{model: PersonalData}]}
  ]
 
 async  getAll(){

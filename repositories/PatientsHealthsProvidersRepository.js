@@ -5,8 +5,8 @@ export class PatientsHealthsProvidersRepository{
   
 model = PatientHealthProvider
 joinList = [
-   {model: HealthProvider },
-   {model: Patient, include:[{model: PersonalData}]}
+   //{model: HealthProvider },
+   //{model: Patient, include:[{model: PersonalData}]}
  ]
 
 async  getAll(){
