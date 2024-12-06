@@ -41,8 +41,8 @@ const MedicsList = () => {
                 <td>{item.medicRecord}</td>
                 <td>{item.medicLicenceNumber}</td>
                 <td>{item.specialty?.name}</td>
-                <td>{item.personalData?.dni}</td>
-                <td>{item.personalData?.lastName} {item.personalData?.firstName}</td>
+                <td>{item.personalInformation?.dni}</td>
+                <td>{item.personalInformation?.lastName} {item.personalInformation?.firstName}</td>
                 <td>{item.dateOfRegistration}</td>
                 <td>
                   {/* Aquí puedes agregar botones para acciones adicionales */}

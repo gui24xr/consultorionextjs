@@ -1,12 +1,12 @@
 
-import { ConsultationService, ConsultingRoom, Medic, PersonalData } from "../lib/db/database.index"
+import { ConsultationService, ConsultingRoom, Medic, PersonalData, Specialty } from "../lib/db/database.index"
 
 export class ConsultationServicesRepository{
   
 model = ConsultationService
 joinList = [ 
   {model:ConsultingRoom},
-  {model:Medic, include:{model:PersonalData}}     
+  {model:Medic, include:[{model:PersonalData},{model:Specialty}]}     
 ]
 
 async  getAll(){

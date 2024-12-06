@@ -41,16 +41,13 @@ async function getPatientById(patientId){
       const addressDataTable = {}
       
       //Abro el transaction
-      
-
-      const newPatient = await Patient.create(patientsTable,{raw:true})
-      if (!newPatient) throw new Error("Error creando patient data...")
-
-      const newPersonalData = await PersonalData.create({...personalDataTable,patientId:newPatient.id},{raw:true})
+       const newPersonalData = await PersonalData.create({...personalDataTable},{raw:true})
       if (!newPersonalData) throw new Error("Error creando personal data de patient...")
 
-  
       await AddressData.create({...addressDataTable,personalDataId: newPersonalData.id})
+
+      const newPatient = await Patient.create({...patientsTable, personalInformationId: newPersonalData.id},{raw:true})
+      if (!newPatient) throw new Error("Error creando patient data...")
       //cierro el transactioon
      await dbTransaction.commit()
      

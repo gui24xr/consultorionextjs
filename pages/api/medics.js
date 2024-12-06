@@ -40,15 +40,13 @@ async function getMedicById(medicId){
       const addressDataTable = {streetNumber:'25A'}
       
       //Abro el transaction
-      const newMedic = await Medic.create(medicsTable,{raw:true})
-      if (!newMedic) throw new Error("Error creando registro medicos...")
-
-      const newPersonalData = await PersonalData.create({...personalDataTable,medicId:newMedic.id},{raw:true})
+      const newPersonalData = await PersonalData.create({...personalDataTable},{raw:true})
       if (!newPersonalData) throw new Error("Error creando personal data...")
 
-  
       await AddressData.create({...addressDataTable,personalDataId: newPersonalData.id})
       
+      const newMedic = await Medic.create({...medicsTable,personalInformationId: newPersonalData.id},{raw:true})
+      if (!newMedic) throw new Error("Error creando registro medicos...")
       //cierro el transactioon
       await dbTransaction.commit()
     

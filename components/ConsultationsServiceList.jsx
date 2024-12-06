@@ -38,10 +38,9 @@ const ConsultationsServiceList = () => {
                 <tr key={item.id}>
                   <td>{item.id}</td>
                   <td>{item.serviceName}</td>
-
-                  <td>{item.specialty?.name}</td>
-                  <td>{item.specialty?.code}</td>
-                  <td>{item.medic?.personalData?.lastName} {item.medic?.personalData?.firstName}</td>
+                  <td>{item.medic?.specialty?.name}</td>
+                  <td>{item.medic?.specialty?.code}</td>
+                  <td>{item.medic?.personalInformation?.lastName} {item.medic?.personalInformation?.firstName}</td>
                   <td>{item.consultingRoom?.name}</td>
                 
                   <td>

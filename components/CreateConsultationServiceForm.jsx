@@ -62,21 +62,7 @@ const CreateConsultationServiceForm = () => {
 
    
      
-        <div style={{ marginBottom: '10px' }}>
-          <label htmlFor="pais">Seleccionar especialidad:</label>
-          <select
-            id="specialties"
-             name="specialtyId"
-             style={{ width: '100%', padding: '8px' }}
-             >
-          {
-            specialtiesData?.map(item => (<option 
-                key={item.id} 
-                value={item.id}>{item.name}-{item.code}
-                </option>))
-          }
-         </select> 
-        </div>
+        
 
         <div style={{ marginBottom: '10px' }}>
           <label htmlFor="medicId">Seleccionar medico:</label>

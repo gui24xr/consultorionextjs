@@ -41,9 +41,9 @@ const PatientsList = () => {
                 <td>{item.patientRecord}</td>
                 <td>{item.dateOfBirth}</td>
                 <td>{item.dateOfRegistration}</td>
-                <td>{item.personalData?.dni}</td>
-                <td>{item.personalData?.lastName} {item.personalData?.firstName}</td>
-                <td>{item.personalData?.email}</td>
+                <td>{item.personalInformation?.dni}</td>
+                <td>{item.personalInformation?.lastName} {item.personalInformation?.firstName}</td>
+                <td>{item.personalInformation?.email}</td>
                 <td>
                   {/* Aquí puedes agregar botones para acciones adicionales */}
                   <button>Ver más</button>
